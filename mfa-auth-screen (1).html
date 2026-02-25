@@ -1,4 +1,11 @@
-/* You can add global styles to this file, and also import other style files */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MFA Authentication</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
@@ -17,13 +24,13 @@
 
   body {
     background: var(--bg);
-    background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),url(./assets/image/istockphoto-485320832-1024x1024.jpg);
+    background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),url(./asset/image/istockphoto-485320832-1024x1024.jpg);
     background-position: center;
       background-repeat: no-repeat;
   background-attachment: fixed;
     font-family: 'DM Sans', sans-serif;
     background-clip: border-box; 
-    background-size: 100% 100%;
+    background-size: 100% 96%;
     color: var(--text);
     min-height: 100vh;
     display: flex;
@@ -429,3 +436,203 @@
   }
   .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #3095f2; animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="container">
+  <div class="card">
+
+    <div class="shield-icon">
+      <img src="./asset/svg/512px-Comcast_(2013-2024)_logo.svg.png" alt="Shield Icon" style="width:72px;height:36px;">
+    </div>
+
+    <div class="heading">Verify your identity</div>
+    <p class="subtext">Choose one or more authentication methods below to continue securely.</p>
+
+    <div class="section-label">Authentication Method</div>
+
+    <div class="auth-grid">
+      <!-- Biometric -->
+      <div class="auth-card" id="card-bio" onclick="selectMethod('bio')">
+        <div class="check-badge">✓</div>
+        <div class="auth-icon">👆</div>
+        <div class="auth-name">Biometric</div>
+        <div class="auth-desc">Fingerprint scan via device sensor</div>
+      </div>
+      <!-- Face Recognition -->
+      <div class="auth-card" id="card-face" onclick="selectMethod('face')">
+        <div class="check-badge">✓</div>
+        <div class="auth-icon">🧬</div>
+        <div class="auth-name">Face ID</div>
+        <div class="auth-desc">Facial recognition using camera</div>
+      </div>
+      <!-- Passkey -->
+      <div class="auth-card" id="card-pass" onclick="selectMethod('pass')">
+        <div class="check-badge">✓</div>
+        <div class="auth-icon">🔑</div>
+        <div class="auth-name">Passkey PIN</div>
+        <div class="auth-desc">Enter your secure 6-digit PIN</div>
+      </div>
+      <!-- OTP -->
+      <div class="auth-card" id="card-otp" onclick="selectMethod('otp')">
+        <div class="check-badge">✓</div>
+        <div class="auth-icon">📲</div>
+        <div class="auth-name">OTP Code</div>
+        <div class="auth-desc">One-time code via SMS or app</div>
+      </div>
+    </div>
+
+    <!-- Dynamic Panel -->
+    <div class="auth-panel" id="auth-panel">
+      <div class="panel-content" id="panel-content">
+        <div style="font-size:36px;margin-bottom:12px;opacity:0.3">🔒</div>
+        <div class="panel-title" style="color:var(--muted)">Select a method above</div>
+        <div class="panel-sub">We'll guide you through the verification</div>
+      </div>
+    </div>
+
+    <button class="cta-btn" id="cta" onclick="handleVerify()">Verify & Continue →</button>
+
+    <div class="panel-sub" style="font-size: 14px;margin-top: 12px;text-align: center;animation: cardIn 0.6s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both;">New User? <a href="#">Sign up</a> </div>
+
+    <div class="footer-text">
+      Having trouble? <a href="#">Contact support</a> or <a href="#">use a recovery code</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let selected = null;
+  let pkFilled = 0;
+
+  const panels = {
+    bio: `
+      <div class="panel-content">
+        <div class="scan-ring">
+          <div class="scan-inner">👆</div>
+        </div>
+        <div class="panel-title">Place your finger</div>
+        <div class="panel-sub">Touch the fingerprint sensor on your device</div>
+      </div>`,
+
+    face: `
+      <div class="panel-content">
+        <div class="face-box">
+          <span style="position:relative;z-index:1">😊</span>
+          <div class="face-scan-line"></div>
+        </div>
+        <div class="panel-title">Look at the camera</div>
+        <div class="panel-sub">Center your face in the frame and hold still</div>
+      </div>`,
+
+    pass: `
+      <div class="panel-content">
+        <div class="passkey-dots">
+          <div class="pk-dot" id="d1"></div>
+          <div class="pk-dot" id="d2"></div>
+          <div class="pk-dot" id="d3"></div>
+          <div class="pk-dot" id="d4"></div>
+          <div class="pk-dot" id="d5"></div>
+          <div class="pk-dot" id="d6"></div>
+        </div>
+        <div class="passkey-numpad" id="numpad"></div>
+      </div>`,
+
+    otp: `
+      <div class="panel-content">
+        <div style="font-size:28px;margin-bottom:12px">📲</div>
+        <div class="panel-title" style="margin-bottom:14px">Enter 6-digit OTP</div>
+        <div class="otp-inputs">
+          ${[1,2,3,4,5,6].map(i => `<input class="otp-box" id="otp${i}" maxlength="1" oninput="otpInput(${i})" onkeydown="otpBack(event,${i})">`).join('')}
+        </div>
+        <div class="panel-sub">Code sent to +91 ●●●●●● 4321 · <a href="#" style="color:#3095f2;font-size:11px">Resend</a></div>
+      </div>
+      <div class="panel-sub" style="font-size: 14px;margin-top: 12px;text-align: center;animation: cardIn 0.6s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both;">New Mobile? <a href="#" style="color:#3095f2;font-size:11px">Update</a></div>
+      `
+  };
+
+  function selectMethod(method) {
+    // Deselect all
+    ['bio','face','pass','otp'].forEach(m => {
+      document.getElementById('card-'+m).classList.remove('selected');
+    });
+    selected = method;
+    document.getElementById('card-'+method).classList.add('selected');
+    document.getElementById('auth-panel').innerHTML = panels[method];
+
+    if (method === 'pass') buildNumpad();
+    if (method === 'bio') setTimeout(simulateBio, 2200);
+    if (method === 'face') setTimeout(simulateFace, 3000);
+    if (method === 'otp') setTimeout(() => document.getElementById('otp1').focus(), 100);
+  }
+
+  function buildNumpad() {
+    const numpad = document.getElementById('numpad');
+    pkFilled = 0;
+    const nums = [1,2,3,4,5,6,7,8,9,'',0,'⌫'];
+    nums.forEach(n => {
+      const btn = document.createElement('button');
+      btn.className = 'num-btn';
+      btn.textContent = n;
+      if (n === '') { btn.style.visibility = 'hidden'; }
+      else {
+        btn.onclick = () => {
+          if (n === '⌫') {
+            if (pkFilled > 0) {
+              document.getElementById('d'+pkFilled).classList.remove('filled');
+              pkFilled--;
+            }
+          } else if (pkFilled < 6) {
+            pkFilled++;
+            document.getElementById('d'+pkFilled).classList.add('filled');
+          }
+        };
+      }
+      numpad.appendChild(btn);
+    });
+  }
+
+  function otpInput(i) {
+    const el = document.getElementById('otp'+i);
+    const val = el.value;
+    if (val && i < 6) {
+      document.getElementById('otp'+(i+1)).focus();
+    }
+  }
+  function otpBack(e, i) {
+    if (e.key === 'Backspace' && !document.getElementById('otp'+i).value && i > 1) {
+      document.getElementById('otp'+(i-1)).focus();
+    }
+  }
+
+  function simulateBio() {
+    const inner = document.querySelector('.scan-inner');
+    if (inner) {
+      inner.style.background = 'linear-gradient(135deg, rgba(48,149,242,0.4), rgba(48,149,242,0.15))';
+      inner.style.boxShadow = '0 0 20px rgba(48,149,242,0.5)';
+    }
+  }
+  function simulateFace() {
+    const box = document.querySelector('.face-box');
+    if (box) {
+      box.style.borderColor = 'rgba(48,149,242,0.8)';
+      box.style.boxShadow = '0 0 20px rgba(48,149,242,0.3)';
+    }
+  }
+
+  function handleVerify() {
+    if (!selected) { alert('Please select an authentication method first.'); return; }
+    const btn = document.getElementById('cta');
+    btn.textContent = '✓ Verified — Redirecting...';
+    btn.style.background = 'linear-gradient(135deg, #3095f2, #1a7ad4)';
+    setTimeout(() => {
+      btn.textContent = 'Verify & Continue →';
+      btn.style.background = '';
+      selectMethod(selected);
+    }, 2500);
+  }
+</script>
+</body>
+</html>
