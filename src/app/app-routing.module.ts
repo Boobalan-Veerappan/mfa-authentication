@@ -1,28 +1,22 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { BioMetricsComponent } from './bio-metrics/bio-metrics.component';
-import { PassKeyComponent } from './pass-key/pass-key.component';
-import { OtpCodeComponent } from './otp-code/otp-code.component';
-import { FaceRecognitionComponent } from './face-recognition/face-recognition.component';
+import { BioMetricsComponent } from './auth/bio-metrics/bio-metrics.component';
+import { PassKeyComponent } from './auth/pass-key/pass-key.component';
+import { OtpCodeComponent } from './auth/otp-code/otp-code.component';
+import { FaceRecognitionComponent } from './auth/face-recognition/face-recognition.component';
 
-const routes: Routes = [{
-  path: 'bio',
-  component: BioMetricsComponent
+const routes: Routes = [
+  {
+  path:'signup',
+  loadChildren: () => import('./sign-up/sign-up.module').then(m => m.SignUpModule)
 },
 {
-  path: 'pass',
-  component: PassKeyComponent
-},{
-  path: 'otp',
-  component: OtpCodeComponent
-},
-{
-  path: 'face',
-  component: FaceRecognitionComponent
+  path:'',
+  loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
 },
 {
   path: '',
-  redirectTo: '/bio',
+  redirectTo: '/',
   pathMatch: 'full'
 }];
 

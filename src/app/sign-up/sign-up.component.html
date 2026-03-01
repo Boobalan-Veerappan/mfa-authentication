@@ -1,0 +1,130 @@
+<div class="signup-container">
+    <div class="card" style="padding: 0;">
+        <div style="display: flex;">
+            <div class="left-panel">
+                <div style="flex: 1; align-self: center;">
+                    <div style="text-align: center;"><img src="../../assets/svg/128px-Comcast_(2013-2024)_logo.svg.png"
+                            alt="Comcast Logo">
+                    </div>
+                </div>
+            </div>
+            <div style="flex: 1 1 75%;padding: 44px 40px 40px;margin: 1rem 0;">
+                <h2 style="margin-bottom: 1rem;">Registration</h2>
+                <p-stepper [value]="1" [linear]="true">
+                    <p-step-list>
+                        <p-step [value]="1">Employee Information</p-step>
+                        <p-step [value]="2">OTP Information</p-step>
+                        <p-step [value]="3">Select Verification Method</p-step>
+                        <p-step [value]="4">Verification</p-step>
+                        <p-step [value]="5">Confirmation</p-step>
+                    </p-step-list>
+                    <p-step-panels>
+                        <p-step-panel [value]="1">
+                            <ng-template #content let-activateCallback="activateCallback">
+                                <span style="font-size: 1.5rem;font-weight: 600;">Employee Information</span>
+                                <div style="font-size: 0.75rem;margin-top: 0.5rem; color: #666;">Fill in your details to
+                                    get started. No password needed.</div>
+                                <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1rem;">
+                                    <form [formGroup]="employeeForm">
+                                        <div style="padding-top: 1.75rem ;">
+                                            <p-floatlabel>
+                                                <input id="firstName" style="min-width: 26.5rem;" type="text" pInputText
+                                                    formControlName="firstName" />
+                                                <label for="firstName">First Name</label>
+                                            </p-floatlabel>
+                                        </div>
+                                        <div style="padding-top: 1.75rem;">
+                                            <p-floatlabel>
+                                                <input id="lastName" style="min-width: 26.5rem;" type="text" pInputText
+                                                    formControlName="lastName" />
+                                                <label for="lastName">Last Name</label>
+                                            </p-floatlabel>
+                                        </div>
+                                        <div style="padding-top: 1.5rem ;">
+
+                                            <p-floatlabel>
+                                                <input id="email" style="min-width: 26.5rem;" type="text" pInputText
+                                                    formControlName="email" />
+                                                <label for="email">Email</label>
+                                            </p-floatlabel>
+                                            <span *ngIf="isFieldInvalid('email')" class="error-message">{{
+                                                getErrorMessage('email') }}</span>
+                                        </div>
+                                        <div style="padding-top: 1.75rem;">
+                                            <p-floatlabel>
+                                                <input id="phone" style="min-width: 26.5rem;" type="text" pInputText
+                                                    formControlName="phoneNumber" />
+                                                <label for="phone">Phone</label>
+
+                                            </p-floatlabel>
+                                            <span *ngIf="isFieldInvalid('phoneNumber')" class="error-message">{{
+                                                getErrorMessage('phoneNumber') }}</span>
+                                        </div>
+                                        <p-button class="block mt-5 text-center" label="Submit"
+                                            [disabled]="employeeForm.invalid"></p-button>
+                                    </form>
+                                      
+                                </div>
+                                <div class="text-right mt-4">
+                                    <p-button label="Next" icon="pi pi-arrow-right" iconPos="right" class="float-right"
+                                        [disabled]="employeeForm.invalid" (onClick)="activateCallback(2)" />
+                                </div>
+                            </ng-template>
+                        </p-step-panel>
+                        <p-step-panel [value]="2">
+                            <ng-template #content let-activateCallback="activateCallback">
+                                <div style="height: 360px;display: flex;flex-direction: column;justify-content: space-around;">
+                                <div class="flex justify-content-center">
+                                    <div class="text-center">
+                                        <span
+                                            style="font-size: 1.5rem;font-weight: 600;margin-top: 1rem;display: block;">Verify
+                                            Your Email</span>
+                                        <div style="font-size: 0.75rem;margin-top: 0.5rem;">Enter code we've sent to
+                                            {{employeeForm.get('email')?.value}}.</div>
+
+                                        <p-input-otp style="margin-top: 1rem;" [(ngModel)]="otp" [integerOnly]="true"
+                                            size="large" [length]="6"
+                                            inputStyle="width: 2.5rem; height: 2.5rem; font-size: 1.25rem;" />
+                                        <!-- <span *ngIf="otp.length > 0" style="display: block; margin-top: 0.5rem; font-size: 0.75rem; color: #666;">Code sent to {{employeeForm.get('email')?.value}}</span> -->
+                                        <span
+                                            style="display: block; margin-top: 0.5rem; font-size: 0.75rem; color: #666;">Didn't
+                                            receive the code? <a href="#">Resend</a></span>
+                                        <p-button class="block mt-5" label="Submit"
+                                            [disabled]="otp.length!=5"></p-button>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p-button label="Next" icon="pi pi-arrow-right" iconPos="right"
+                                        (onClick)="activateCallback(3)" />
+                                </div>
+</div>
+                            </ng-template>
+                        </p-step-panel>
+                        <p-step-panel [value]="3">
+                            <ng-template #content let-activateCallback="activateCallback">
+                                Select Verification Method
+                                <p-button label="Next" icon="pi pi-arrow-right" iconPos="right"
+                                    (onClick)="activateCallback(4)" />
+                            </ng-template>
+                        </p-step-panel>
+                        <p-step-panel [value]="4">
+                            <ng-template #content let-activateCallback="activateCallback">
+                                Verification
+                                <p-button label="Next" icon="pi pi-arrow-right" iconPos="right"
+                                    (onClick)="activateCallback(4)" />
+                            </ng-template>
+                        </p-step-panel>
+                        <p-step-panel [value]="5">
+                            <ng-template #content let-activateCallback="activateCallback">
+                                Confirmation
+                                <p-button label="Next" icon="pi pi-arrow-right" iconPos="right"
+                                    (onClick)="activateCallback(0)" />
+                            </ng-template>
+                        </p-step-panel>
+                    </p-step-panels>
+
+                </p-stepper>
+            </div>
+        </div>
+    </div>
+</div>

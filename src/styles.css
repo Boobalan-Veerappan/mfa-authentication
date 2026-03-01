@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
     --bg: #f0f6ff;
@@ -57,11 +57,14 @@
   }
 
   .container {
-    position: relative;
+    position: absolute;
     z-index: 1;
     width: 100%;
     max-width: 480px;
     padding: 20px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
   }
 
   .card {
@@ -429,3 +432,7 @@
   }
   .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #3095f2; animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
+
+  .float-right {
+    float: right;
+  }
