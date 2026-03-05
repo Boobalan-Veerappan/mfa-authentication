@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputOtpModule } from 'primeng/inputotp';
+import { RadioButtonModule } from 'primeng/radiobutton';
 @NgModule({
   declarations: [SignUpComponent],
   imports: [
@@ -20,7 +21,9 @@ import { InputOtpModule } from 'primeng/inputotp';
     InputOtpModule,
     InputTextModule,
     FloatLabelModule,
-    SignUpRoutingModule
+    SignUpRoutingModule,
+    RadioButtonModule,
+    InputOtpModule
   ]
 })
 export class SignUpModule { }

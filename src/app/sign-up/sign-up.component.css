@@ -21,3 +21,26 @@
     border-top-left-radius: 28px;
     border-bottom-left-radius: 28px;
 }
+
+.confirmation-container{
+    display: inline-block;
+    padding: 3rem;
+}
+
+.auth-select{
+    display: flex;
+    align-items: baseline;
+}
+
+.bordered-box{
+  border: 1.5px solid rgba(48, 149, 242, 0.15);
+  background: #f4f9ff;
+}
+
+.verification-selection-box{
+        flex: 1 1 50%;
+    align-self: center;
+    padding-left: 2rem;
+    border-left: 1px solid rgba(48, 149, 242, 0.15);
+    margin-left: 2rem;
+}

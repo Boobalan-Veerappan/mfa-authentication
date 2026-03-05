@@ -12,6 +12,8 @@ export class SignUpComponent {
 
     employeeForm:FormGroup;
     otp:string = '';
+    verificationMethod:string = ''
+    passKeyValue:string = '';
 
      constructor(public fb:FormBuilder) {
         this.employeeForm = this.fb.group({
@@ -68,5 +70,8 @@ export class SignUpComponent {
                 this.employeeForm.get(key)?.markAsTouched();
             });
         }
+     }
+     selectVerification(method:string){
+        this.verificationMethod = method;
      }
  }
